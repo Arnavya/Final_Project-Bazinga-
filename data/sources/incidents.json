@@ -1,0 +1,20 @@
+[
+  {
+    "id": "INC-9",
+    "title": "Payment write failures spike",
+    "service": "payments-service",
+    "summary": "Elevated 500s on payment writes shortly after a deploy. Initial on-call notes speculated a traffic load spike."
+  },
+  {
+    "id": "INC-12",
+    "title": "Notification delivery delays",
+    "service": "notifications-service",
+    "summary": "Notifications delayed up to 30 minutes. First suspected to be database slowness."
+  },
+  {
+    "id": "INC-15",
+    "title": "Search latency regression",
+    "service": "search-service",
+    "summary": "Search p95 latency rose after a ranking change; rolled back, unrelated to payments."
+  }
+]

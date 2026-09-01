@@ -1,0 +1,38 @@
+[
+  {
+    "id": "COMMIT-a1b2",
+    "service": "payments-service",
+    "release": "REL-v2.1",
+    "message": "Revert migration 0042 (NOT NULL settled_at without default). It broke payment writes and blocked the v2.1 release. Backfill planned before re-apply."
+  },
+  {
+    "id": "COMMIT-c3d4",
+    "service": "checkout-service",
+    "release": null,
+    "message": "checkout: switch retries to exponential backoff + jitter. Fixed-interval retries amplified load and worsened the payments retry storm during INC-9."
+  },
+  {
+    "id": "COMMIT-e5f6",
+    "service": "auth-service",
+    "release": "REL-v2.2",
+    "message": "auth: scaffold token-rotation endpoint (incomplete; not production-ready)."
+  },
+  {
+    "id": "COMMIT-g7h8",
+    "service": "notifications-service",
+    "release": null,
+    "message": "notifications: lower worker concurrency from 16 to 2 by mistake in a config refactor. This starved the delivery queue and caused INC-12. Reverting."
+  },
+  {
+    "id": "COMMIT-i9j0",
+    "service": "search-service",
+    "release": null,
+    "message": "search: adjust ranking weights for autumn catalogue (later rolled back, INC-15)."
+  },
+  {
+    "id": "COMMIT-k1l2",
+    "service": "billing-service",
+    "release": null,
+    "message": "billing: fix half-cent invoice rounding."
+  }
+]

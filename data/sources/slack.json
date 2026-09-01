@@ -1,0 +1,70 @@
+[
+  {
+    "id": "SLACK-01",
+    "channel": "#releases",
+    "entities": [
+      "REL-v2.1",
+      "TICKET-123"
+    ],
+    "text": "Maya: v2.1 is held \u2014 migration 0042 broke payment writes, we're rolling it back. Raj: so it's not the QA backlog? Maya: correct, the QA backlog (TICKET-130) is separate and was never on the critical path."
+  },
+  {
+    "id": "SLACK-02",
+    "channel": "#incidents",
+    "entities": [
+      "INC-9",
+      "payments-service"
+    ],
+    "text": "Maya: payments 500s started right after the deploy. We first guessed a load spike, but traffic was normal \u2014 the real cause is migration 0042 adding a non-null column with no default. Reverting now (COMMIT-a1b2). We should add a payment-write alarm."
+  },
+  {
+    "id": "SLACK-03",
+    "channel": "#checkout",
+    "entities": [
+      "checkout-service"
+    ],
+    "text": "Raj: the retry storm made INC-9 worse \u2014 fixed-interval retries hammered payments. Switching to exponential backoff with jitter and capping retries at 3."
+  },
+  {
+    "id": "SLACK-04",
+    "channel": "#platform",
+    "entities": [
+      "notifications-service",
+      "auth-service"
+    ],
+    "text": "Lena: I'm now the owner of notifications-service. Sam: yep, handed over; I'm on auth-service now. Please update the wiki, it's stale. Escalations go to the team-platform on-call."
+  },
+  {
+    "id": "SLACK-05",
+    "channel": "#releases",
+    "entities": [
+      "REL-v2.2",
+      "TICKET-145"
+    ],
+    "text": "Sam: v2.2 is blocked on the auth token-rotation endpoint (TICKET-145). It isn't done yet \u2014 realistically a couple of sprints out unless we pull in help."
+  },
+  {
+    "id": "SLACK-06",
+    "channel": "#incidents",
+    "entities": [
+      "INC-12",
+      "notifications-service"
+    ],
+    "text": "Lena: notification delays (INC-12) looked like DB slowness at first, but it was a config refactor dropping worker concurrency 16->2 (COMMIT-g7h8). We had no queue-depth alarm, which is why it took so long to spot."
+  },
+  {
+    "id": "SLACK-07",
+    "channel": "#search",
+    "entities": [
+      "search-service",
+      "INC-15"
+    ],
+    "text": "Priya: rolled back the ranking change, search latency back to normal. Unrelated to v2.x."
+  },
+  {
+    "id": "SLACK-08",
+    "channel": "#random",
+    "entities": [],
+    "text": "Tom: coffee machine on floor 3 is broken again. Anyone know who to ping?"
+  }
+]

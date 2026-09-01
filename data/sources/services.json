@@ -1,0 +1,43 @@
+[
+  {
+    "name": "payments-service",
+    "team": "team-payments",
+    "owner": "Maya Chen",
+    "depends_on": []
+  },
+  {
+    "name": "checkout-service",
+    "team": "team-checkout",
+    "owner": "Raj Patel",
+    "depends_on": [
+      "payments-service",
+      "auth-service"
+    ]
+  },
+  {
+    "name": "notifications-service",
+    "team": "team-platform",
+    "owner": "Sam Lee",
+    "depends_on": []
+  },
+  {
+    "name": "auth-service",
+    "team": "team-platform",
+    "owner": "Sam Lee",
+    "depends_on": []
+  },
+  {
+    "name": "search-service",
+    "team": "team-search",
+    "owner": "Priya Nair",
+    "depends_on": []
+  },
+  {
+    "name": "billing-service",
+    "team": "team-billing",
+    "owner": "Tom Reed",
+    "depends_on": [
+      "payments-service"
+    ]
+  }
+]

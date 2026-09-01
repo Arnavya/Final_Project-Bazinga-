@@ -1,0 +1,30 @@
+{
+  "type": "strategy",
+  "trigger": {
+    "question_type": "release_delay",
+    "topics": [
+      "release",
+      "payments",
+      "incident"
+    ],
+    "entities": [
+      "REL-v2.1"
+    ]
+  },
+  "lesson_text": "First consult the incident log, the migration script, and the rollback commit to establish the factual chain; then cross\u2011check each step against the official incident report, and avoid inserting unverified ticket IDs or service names that are not documented.",
+  "root_cause_correction": "Migration 0042 added a non-null column without a default, breaking payment writes.",
+  "recommended_evidence_ids": [
+    "TICKET-123",
+    "COMMIT-a1b2",
+    "SLACK-01"
+  ],
+  "missed_evidence_types": [
+    "#releases / #incidents Slack threads",
+    "blocking tickets",
+    "commits / deploy logs"
+  ],
+  "source_question_id": "Q-08",
+  "lesson_id": "LE-001",
+  "reinforced_count": 1,
+  "created_ts": 1787924444.8733802
+}

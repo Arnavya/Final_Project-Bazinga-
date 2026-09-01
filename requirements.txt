@@ -1,0 +1,21 @@
+# --- Core (required) — pure-Python / light, runs anywhere ---
+numpy>=1.24
+networkx>=3.0
+rank-bm25>=0.2.2
+
+# --- Recommended for best accuracy (optional; graceful fallback if absent) ---
+# Local embeddings (bge-small) + cross-encoder reranker (bge-reranker-base).
+# These pull in torch (~hundreds of MB). If not installed, the engine falls
+# back to a pure-numpy hashing embedder and skips reranking.
+sentence-transformers>=2.2.2
+
+# --- Dashboard (optional; the CLI runners work without it) ---
+streamlit>=1.30
+pandas>=2.0
+
+# --- Tests (optional; only needed to run `pytest`) ---
+pytest>=7.0
+
+# NOTE: the LLM is called over plain HTTP (urllib, stdlib) — no SDK required.
+#       Set LLM_PROVIDER=groq (default) and GROQ_API_KEY in .env for real quality,
+#       or LLM_PROVIDER=stub to run the full pipeline offline with zero setup.

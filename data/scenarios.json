@@ -1,0 +1,162 @@
+[
+  {
+    "id": "Q-01",
+    "question": "What was the root cause of the INC-9 payment incident, and how was it fully resolved and prevented?",
+    "question_type": "incident_rca",
+    "topics": [
+      "incident",
+      "payments"
+    ],
+    "gold_answer": "The root cause was database migration 0042 on payments-service, which added a NOT NULL column (settled_at) with no default and broke payment writes \u2014 NOT the traffic load spike claimed in the postmortem wiki. It was resolved by reverting the migration (COMMIT-a1b2) and running a backfill. To prevent recurrence the team added a mandatory pre-deploy migration safety check and a payment-write failure alarm. The v2.1 release was held until this was done.",
+    "gold_root_cause": "Migration 0042 added a non-null column without a default (not a load spike).",
+    "gold_evidence_ids": [
+      "TICKET-123",
+      "COMMIT-a1b2",
+      "SLACK-02"
+    ]
+  },
+  {
+    "id": "Q-02",
+    "question": "Why did checkout-service change its retry strategy, and what was the measured result?",
+    "question_type": "design_decision",
+    "topics": [
+      "checkout",
+      "payments",
+      "reliability"
+    ],
+    "gold_answer": "checkout-service used fixed-interval retries, which during the INC-9 window amplified load and worsened a retry storm against payments-service. The team switched to exponential backoff with jitter and capped retries at 3 (COMMIT-c3d4). The measured result: retry-driven load on payments dropped by roughly 80% and checkout error rates returned to baseline within a day.",
+    "gold_root_cause": "Fixed-interval retries amplified load and worsened the payments retry storm.",
+    "gold_evidence_ids": [
+      "COMMIT-c3d4",
+      "SLACK-03"
+    ]
+  },
+  {
+    "id": "Q-03",
+    "question": "If auth-service misses its deadline, what is the full downstream blast radius and how can it be mitigated?",
+    "question_type": "impact_analysis",
+    "topics": [
+      "auth",
+      "checkout",
+      "release"
+    ],
+    "gold_answer": "auth-service owes the token-rotation endpoint (TICKET-145), which is undelivered. Directly, checkout-service's v2.2 depends on it, so the v2.2 release is blocked. Indirectly, billing-service's v2.2 reconciliation (which runs off checkout/payments) would also slip. Customer impact: the new token-rotation security feature does not ship and the milestone date moves. Mitigation: ship v2.2 with rotation behind a feature flag and fast-follow, or add a second engineer to auth-service.",
+    "gold_root_cause": "",
+    "gold_evidence_ids": [
+      "TICKET-145",
+      "SLACK-05",
+      "WIKI-checkout-service"
+    ]
+  },
+  {
+    "id": "Q-04",
+    "question": "The postmortem says v2.1 was delayed by a QA backlog and a load spike. Is that accurate?",
+    "question_type": "release_delay",
+    "topics": [
+      "release",
+      "payments"
+    ],
+    "gold_answer": "No \u2014 both are wrong. The QA regression backlog (TICKET-130) was real but off the critical path, and there was no load spike; that was an incorrect early hypothesis in the postmortem. The actual delay was caused by migration 0042 breaking payment writes (INC-9); v2.1 was held until the migration was reverted (COMMIT-a1b2). Both the postmortem and the release-notes wiki are misleading.",
+    "gold_root_cause": "Migration 0042 added a non-null column without a default; QA backlog and load spike were not the cause.",
+    "gold_evidence_ids": [
+      "TICKET-123",
+      "COMMIT-a1b2",
+      "SLACK-01"
+    ]
+  },
+  {
+    "id": "Q-05",
+    "question": "Who currently owns notifications-service, and who is the escalation contact?",
+    "question_type": "ownership",
+    "topics": [
+      "ownership",
+      "notifications"
+    ],
+    "gold_answer": "Lena Ortiz (team-platform) currently owns notifications-service, transferred from Sam Lee (TICKET-160). The wiki is stale and still lists Sam. Escalation goes to the team-platform on-call rotation, with Sam Lee as a secondary contact given his prior ownership.",
+    "gold_root_cause": "",
+    "gold_evidence_ids": [
+      "TICKET-160",
+      "SLACK-04",
+      "WIKI-notifications-service"
+    ]
+  },
+  {
+    "id": "Q-06",
+    "question": "What caused the INC-12 notification delays, and why did it take so long to detect?",
+    "question_type": "incident_rca",
+    "topics": [
+      "incident",
+      "notifications"
+    ],
+    "gold_answer": "The root cause was a config refactor that mistakenly dropped notifications-service worker concurrency from 16 to 2 (COMMIT-g7h8), starving the delivery queue \u2014 it was initially misdiagnosed as database slowness. Detection was slow because there was no queue-depth alarm; the team added one as a follow-up. It was fixed by reverting the concurrency change.",
+    "gold_root_cause": "A config refactor dropped worker concurrency from 16 to 2, starving the queue (not DB slowness).",
+    "gold_evidence_ids": [
+      "COMMIT-g7h8",
+      "SLACK-06"
+    ]
+  },
+  {
+    "id": "Q-07",
+    "question": "What is blocking the v2.2 release, who must fix it, by when, and what is the mitigation?",
+    "question_type": "milestone_blocker",
+    "topics": [
+      "release",
+      "auth"
+    ],
+    "gold_answer": "v2.2 is blocked by the undelivered auth token-rotation endpoint (TICKET-145), which is only scaffolded (COMMIT-e5f6). Sam Lee, the auth-service owner, must complete it; the current estimate is about two sprints out. Mitigation: ship v2.2 with rotation behind a feature flag and fast-follow, or pull in a second engineer to accelerate auth-service.",
+    "gold_root_cause": "",
+    "gold_evidence_ids": [
+      "TICKET-145",
+      "COMMIT-e5f6",
+      "SLACK-05"
+    ]
+  },
+  {
+    "id": "Q-08",
+    "question": "Walk through the complete causal chain of the v2.1 delay, correcting any wrong theories.",
+    "question_type": "release_delay",
+    "topics": [
+      "release",
+      "payments",
+      "incident"
+    ],
+    "gold_answer": "Migration 0042 added a NOT NULL column without a default, which broke payment writes (INC-9). It was initially blamed on a traffic load spike and on a QA backlog \u2014 both wrong. Once the real cause was identified, the migration was reverted (COMMIT-a1b2) and a backfill planned, after which v2.1 shipped about six days late. The QA backlog was off the critical path and there was no load spike.",
+    "gold_root_cause": "Migration 0042 added a non-null column without a default, breaking payment writes.",
+    "gold_evidence_ids": [
+      "TICKET-123",
+      "COMMIT-a1b2",
+      "SLACK-01"
+    ]
+  },
+  {
+    "id": "Q-09",
+    "question": "If payments-service has a complete outage, what breaks, what is the customer impact, and how do we mitigate?",
+    "question_type": "impact_analysis",
+    "topics": [
+      "payments",
+      "checkout"
+    ],
+    "gold_answer": "checkout-service breaks first because it calls payments-service during the funnel, and billing-service's reconciliation also fails since it depends on payments. Customer impact: customers cannot complete checkout or payment. Mitigation: checkout already has exponential backoff (COMMIT-c3d4); add a circuit breaker to fail fast with a 'try again later' message, and queue billing reconciliation for replay once payments recovers.",
+    "gold_root_cause": "",
+    "gold_evidence_ids": [
+      "WIKI-checkout-service",
+      "COMMIT-c3d4"
+    ]
+  },
+  {
+    "id": "Q-10",
+    "question": "Across INC-9 and INC-12, what recurring process problem do they reveal, and how should it be fixed?",
+    "question_type": "incident_rca",
+    "topics": [
+      "incident",
+      "process"
+    ],
+    "gold_answer": "In both incidents the real root cause (a bad migration in INC-9; a bad concurrency config in INC-12) was initially misdiagnosed (load spike; DB slowness) and was only found by reading the deploy commits and #incidents Slack \u2014 the incident summaries and wikis were wrong. The recurring problem is missing pre-deploy safety checks and missing alarms (a payment-write alarm and a queue-depth alarm), plus postmortems written from assumptions. The fix is mandatory deploy checks, those alarms, and evidence-based postmortems.",
+    "gold_root_cause": "",
+    "gold_evidence_ids": [
+      "COMMIT-a1b2",
+      "COMMIT-g7h8",
+      "SLACK-06"
+    ]
+  }
+]

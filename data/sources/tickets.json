@@ -1,0 +1,92 @@
+[
+  {
+    "id": "TICKET-101",
+    "title": "v2.1 release tracking",
+    "status": "done",
+    "service": "payments-service",
+    "owner": "Maya Chen",
+    "blocks": [],
+    "relates": [],
+    "body": "Umbrella ticket tracking the v2.1 release checklist and sign-offs."
+  },
+  {
+    "id": "TICKET-123",
+    "title": "Roll back DB migration 0042 on payments-service",
+    "status": "done",
+    "service": "payments-service",
+    "owner": "Maya Chen",
+    "blocks": [
+      "REL-v2.1"
+    ],
+    "relates": [
+      "INC-9"
+    ],
+    "body": "Migration 0042 added a NOT NULL column `settled_at` without a default. Existing insert paths broke, causing payment write failures (INC-9). The v2.1 release was HELD until the migration was reverted and a backfill added."
+  },
+  {
+    "id": "TICKET-130",
+    "title": "QA regression backlog cleanup",
+    "status": "done",
+    "service": "checkout-service",
+    "owner": "Raj Patel",
+    "blocks": [],
+    "relates": [],
+    "body": "Routine QA regression backlog worked down before v2.1. Mentioned in the release notes but NOT on the release critical path."
+  },
+  {
+    "id": "TICKET-145",
+    "title": "Auth token rotation dependency for v2.2",
+    "status": "blocked",
+    "service": "auth-service",
+    "owner": "Sam Lee",
+    "blocks": [
+      "REL-v2.2"
+    ],
+    "relates": [],
+    "body": "Checkout v2.2 depends on the new auth token-rotation endpoint. It is not yet delivered, so v2.2 is blocked until auth-service ships it."
+  },
+  {
+    "id": "TICKET-160",
+    "title": "Ownership transfer: notifications-service",
+    "status": "done",
+    "service": "notifications-service",
+    "owner": "Lena Ortiz",
+    "blocks": [],
+    "relates": [],
+    "body": "Ownership of notifications-service transferred from Sam Lee to Lena Ortiz. Sam now focuses on auth-service. (The service wiki page has not been updated.)"
+  },
+  {
+    "id": "TICKET-180",
+    "title": "INC-9 postmortem (draft)",
+    "status": "done",
+    "service": "payments-service",
+    "owner": "Maya Chen",
+    "blocks": [],
+    "relates": [
+      "INC-9"
+    ],
+    "body": "Draft postmortem. Early hypothesis: INC-9 was triggered by a traffic load spike during peak hours. (NOTE: this draft was later found to be incorrect.)"
+  },
+  {
+    "id": "TICKET-170",
+    "title": "Search relevance tuning",
+    "status": "done",
+    "service": "search-service",
+    "owner": "Priya Nair",
+    "blocks": [],
+    "relates": [
+      "INC-15"
+    ],
+    "body": "Tune search ranking weights for the autumn catalogue. Unrelated to payments."
+  },
+  {
+    "id": "TICKET-175",
+    "title": "Invoice rounding bug",
+    "status": "done",
+    "service": "billing-service",
+    "owner": "Tom Reed",
+    "blocks": [],
+    "relates": [],
+    "body": "Fix half-cent rounding error on invoices. Unrelated to the release or incidents."
+  }
+]

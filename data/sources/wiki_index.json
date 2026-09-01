@@ -1,0 +1,44 @@
+[
+  {
+    "id": "WIKI-release-v2.1",
+    "title": "Release v2.1 notes",
+    "service": "payments-service",
+    "file": "wiki/WIKI-release-v2.1.md"
+  },
+  {
+    "id": "WIKI-inc9-postmortem",
+    "title": "INC-9 postmortem",
+    "service": "payments-service",
+    "file": "wiki/WIKI-inc9-postmortem.md"
+  },
+  {
+    "id": "WIKI-payments-service",
+    "title": "payments-service overview",
+    "service": "payments-service",
+    "file": "wiki/WIKI-payments-service.md"
+  },
+  {
+    "id": "WIKI-notifications-service",
+    "title": "notifications-service overview",
+    "service": "notifications-service",
+    "file": "wiki/WIKI-notifications-service.md"
+  },
+  {
+    "id": "WIKI-checkout-service",
+    "title": "checkout-service overview",
+    "service": "checkout-service",
+    "file": "wiki/WIKI-checkout-service.md"
+  },
+  {
+    "id": "WIKI-auth-service",
+    "title": "auth-service overview",
+    "service": "auth-service",
+    "file": "wiki/WIKI-auth-service.md"
+  },
+  {
+    "id": "WIKI-search-service",
+    "title": "search-service overview",
+    "service": "search-service",
+    "file": "wiki/WIKI-search-service.md"
+  }
+]

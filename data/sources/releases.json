@@ -1,0 +1,20 @@
+[
+  {
+    "id": "REL-v2.1",
+    "name": "v2.1",
+    "status": "released-late",
+    "note": "Shipped 6 days behind schedule."
+  },
+  {
+    "id": "REL-v2.2",
+    "name": "v2.2",
+    "status": "blocked",
+    "note": "Not yet shipped."
+  },
+  {
+    "id": "REL-v2.0",
+    "name": "v2.0",
+    "status": "released",
+    "note": "Shipped on time, no issues."
+  }
+]
