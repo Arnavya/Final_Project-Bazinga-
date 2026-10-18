@@ -16,9 +16,11 @@ copied files; that throws away every commit.
 The original project came as a GitHub ZIP of commit `2ffe22a`, without its history. Here it was
 committed as `ac9abc8`: same files, different hash, no shared ancestor with GitHub.
 If you push this branch to the original GitHub repository as-is, GitHub sees unrelated histories
-and the pull request cannot be opened. So on the second laptop you replay the 11 DevOps commits on
-top of the real `2ffe22a`. Because `ac9abc8` and `2ffe22a` have identical file trees, the replay
-applies without conflicts.
+and the pull request cannot be opened. So on the second laptop you replay the DevOps commits
+(`git log --oneline ac9abc8..devops-improvements` lists them) on top of the real `2ffe22a`. Because `ac9abc8` and `2ffe22a` have identical file trees, the replay
+applies without conflicts. This exact procedure was rehearsed against a simulated upstream
+commit with the same tree: all commits replayed cleanly, `2ffe22a`'s stand-in became an ancestor,
+and the final tree matched the delivered branch file for file.
 
 ## Steps on the second laptop
 
@@ -41,9 +43,9 @@ git rebase --onto 2ffe22a857d4a5637c5d247518773280722ae9e9 \
 git branch -m devops-local devops-improvements
 
 # 4. Check before pushing
-git log --oneline 2ffe22a..devops-improvements                 # the 11 DevOps commits, oldest at the bottom
+git log --oneline 2ffe22a..devops-improvements                 # the DevOps commits, oldest at the bottom
 git merge-base --is-ancestor 2ffe22a devops-improvements && echo "baseline is an ancestor"
-git diff --stat 2ffe22a devops-improvements | tail -1          # ~65 files changed
+git diff --stat 2ffe22a devops-improvements | tail -1          # about 70 files changed
 git status                                                     # clean
 
 # 5. Push the branch (this is the only publishing step, and you run it)

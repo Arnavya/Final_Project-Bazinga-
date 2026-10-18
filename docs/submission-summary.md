@@ -21,7 +21,9 @@ push for the final hashes.
 | `2876ef2` | 2026-10-18 12:21 | deploy: reasoning-engine 0.2.0-dev | Release control |
 | `fef3c0c` | 2026-10-18 12:22 | security: add dependency update automation, pre-commit secret guard and controls record | Security |
 | `855c2a8` | 2026-10-18 12:26 | test: record verification results and operational evidence | Verification |
-| (final) | 2026-10-18 | docs: complete README, decisions, viva notes and transfer guide | Documentation |
+| `7f4321b` | 2026-10-18 12:28 | docs: complete README, decisions, viva notes and transfer guide | Documentation |
+| `b256e6d` | 2026-10-18 12:29 | security: allowlist documentation placeholders in gitleaks | Security |
+| (last) | 2026-10-18 | docs: update commit list and transfer guide after final review | Documentation |
 
 ## Changes by rubric area
 
@@ -50,5 +52,5 @@ gitleaks, pip-audit, trivy, SHA-pinned Actions, Dependabot, pre-commit hook.
 **Verification** — `docs/verification.md` (34 checks), `docs/evidence/` (raw output).
 
 ## Size of change
-63 files changed, about 2,000 lines added before the final documentation commit. Application logic
+About 70 files changed and 2,500 lines added (`git diff --stat 2ffe22a..devops-improvements`). Answer logic
 untouched: offline benchmark output is identical before and after.
