@@ -39,7 +39,7 @@ containerd `restrict_oom_score_adj = true`; the node IP added to `NO_PROXY` so `
 | 12 | Workflow syntax | `actionlint` | PASS | — |
 | 13 | Manifest schema, base + persistent overlay | `kubectl kustomize ... \| kubeconform -strict -kubernetes-version 1.33.0` | PASS — 13 resources valid | — |
 | 14 | CI policy checks, with a negative control | policy script from `ci.yml`; then a copy using `:latest` | PASS; negative control detected | — |
-| 15 | Secret scan, full history / working tree / staged | `gitleaks git`, `gitleaks dir`, `gitleaks git --staged` | PASS — no leaks | 06 |
+| 15 | Secret scan, full history / working tree / staged | `gitleaks git`, `gitleaks dir`, `gitleaks git --staged` | FAIL→FIXED: the README placeholder `GROQ_API_KEY='<key>'` (commit `7f4321b`) was flagged as `generic-api-key`; `.gitleaks.toml` allowlists `='<placeholder>'` lines only. Re-run: history and tree clean; negative control with a realistic `gsk_…` key still caught | 06 |
 | 16 | Dependency CVEs | `pip-audit -r requirements-runtime.txt --strict` | PASS — none known | 06 |
 | 17 | Image CVE scan | `trivy image --severity CRITICAL,HIGH` | BLOCKED — trivy DB download refused (mirror.gcr.io) | 06 |
 | 18 | Deploy; PSA `restricted` admits the pod | `kubectl apply -k k8s/base`; `rollout status` | PASS | 07 |

@@ -1,0 +1,8 @@
+# gitleaks: default rules plus one allowlist for documentation placeholders.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Lines that only carry a <placeholder>, e.g. GROQ_API_KEY='<key>' in docs"
+regexTarget = "line"
+regexes = ['''=\s*['"]<[a-z-]+>['"]''']

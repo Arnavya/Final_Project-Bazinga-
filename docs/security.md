@@ -21,7 +21,8 @@ repository's local test environment (see `docs/verification.md`).
 - Key enters the pod only as an env var from `reasoning-engine-secrets` (`docs/operations.md` §6).
 - Build-time proxy CA is passed as a BuildKit secret mount, not a build arg or `COPY`, so it is
   not in any layer. Verified: no `/run/secrets` and no proxy CA in the built image.
-- gitleaks scans the full Git history in CI and in the optional pre-commit hook.
+- gitleaks scans the full Git history in CI and in the optional pre-commit hook. `.gitleaks.toml`
+  keeps the default rules and allowlists only lines of the form `='<placeholder>'` used in docs.
   Verified: `gitleaks git` and `gitleaks dir` → no leaks.
 
 ### Container
