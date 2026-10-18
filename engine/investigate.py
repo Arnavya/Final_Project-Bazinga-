@@ -9,12 +9,16 @@ V1 vs V2 is controlled by `use_lessons`: V1 has no Learning Memory, V2 does.
 """
 from __future__ import annotations
 
+import logging
 import re
 import time
 from typing import Any, Dict, List
 
 from engine import config, llm
+from engine.logs import get_logger, log_event
 from engine.retrieve import Retrieval, retrieve
+
+log = get_logger("investigate")
 
 # Words that signal a causal / explanatory sentence (used by the stub).
 _CUES = [
@@ -223,9 +227,12 @@ def _llm_answer(question, version, use_lessons, r, retr_conf) -> Dict[str, Any]:
         # Same model for BOTH passes (config.LLM_MODEL). temperature=0 -> deterministic; the
         # only V1->V2 difference is what's retrieved into context (the learning).
         data = llm.chat_json(system, user, model=config.LLM_MODEL, temperature=0.0)
-    except llm.LLMError:
+    except llm.LLMError as exc:
         # Resilience: on rate-limit / timeout / parse failure, degrade to the
         # deterministic answer rather than emitting an error that tanks metrics.
+        # Logged as a warning so the silent degradation is visible to operators.
+        log_event(log, "llm.fallback_to_stub", level=logging.WARNING, version=version,
+                  error=str(exc)[:200])
         return _stub_answer(question, version, use_lessons, r, retr_conf)
 
     # Citation grounding: drop any cited id that wasn't actually retrieved.
