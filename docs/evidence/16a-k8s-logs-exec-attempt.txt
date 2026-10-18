@@ -1,0 +1,16 @@
+## FIRST ATTEMPT (kept as a finding): requests made with 'kubectl exec ... python -c' log to the exec
+## session, not to the container's main process, so 'kubectl logs' showed none of them.
+## Superseded by 16-k8s-ui-requests-and-logs.txt, which sends requests through the Service.
+
+## runbook log queries against the live pod (2026-10-18T12:23:00Z)
+$ kubectl -n reasoning-engine logs deploy/reasoning-engine | grep "\"event\": \"ask.completed\"" | python3 -c ...
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import sys,json; l=[json.loads(x)["latency_ms"] for x in sys.stdin]; print(len(l), "asks, max", max(l), "ms")
+                                                                                                    ~~~^^^
+ValueError: max() iterable argument is empty
+
+sample lines:
+
+$ ... | grep -c llm.fallback_to_stub
+0

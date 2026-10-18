@@ -1,0 +1,8 @@
+namespace/reasoning-engine created
+serviceaccount/reasoning-engine created
+configmap/reasoning-engine-config created
+service/reasoning-engine created
+deployment.apps/reasoning-engine created
+networkpolicy.networking.k8s.io/reasoning-engine created
+Waiting for deployment "reasoning-engine" rollout to finish: 0 of 1 updated replicas are available...
+deployment "reasoning-engine" successfully rolled out

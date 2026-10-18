@@ -1,0 +1,19 @@
+## readiness probe failure and recovery (2026-10-18T12:07:16Z)
+--- before: endpoints
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME               ENDPOINTS         AGE
+reasoning-engine   10.42.0.32:8501   48s
+--- corrupt vector_meta.json in the pod
+NAME                                READY   STATUS    RESTARTS   AGE
+reasoning-engine-64d657dfdd-vvqg9   0/1     Running   0          83s
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME               ENDPOINTS   AGE
+reasoning-engine               83s
+  Warning  Unhealthy  10s (x4 over 30s)  kubelet            Readiness probe failed: {"ready": false, "version": "0.1.0-dev", "git_sha": "00239e4e9871e7fefef7e38e5ba7ad3eedb9faef", "llm_provider": "stub", "stores_dir": "/app/stores", "problems": ["vector_meta.json: unreadable (JSONDecodeError)"]}
+--- restore the file
+E1018 17:37:52.805839   17808 websocket.go:297] Unknown stream id 1, discarding message
+NAME                                READY   STATUS    RESTARTS   AGE
+reasoning-engine-64d657dfdd-vvqg9   1/1     Running   0          98s
+Warning: v1 Endpoints is deprecated in v1.33+; use discovery.k8s.io/v1 EndpointSlice
+NAME               ENDPOINTS         AGE
+reasoning-engine   10.42.0.32:8501   99s

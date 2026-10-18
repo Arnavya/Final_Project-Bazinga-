@@ -1,0 +1,34 @@
+## kubectl get all,netpol,cm,sa
+NAME                                    READY   STATUS    RESTARTS   AGE
+pod/reasoning-engine-64d657dfdd-vvqg9   1/1     Running   0          14s
+
+NAME                       TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)   AGE
+service/reasoning-engine   ClusterIP   10.43.240.102   <none>        80/TCP    14s
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/reasoning-engine   1/1     1            1           14s
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/reasoning-engine-64d657dfdd   1         1         1       14s
+
+NAME                                               POD-SELECTOR                              AGE
+networkpolicy.networking.k8s.io/reasoning-engine   app.kubernetes.io/name=reasoning-engine   14s
+
+NAME                                DATA   AGE
+configmap/kube-root-ca.crt          1      14s
+configmap/reasoning-engine-config   9      14s
+
+NAME                              SECRETS   AGE
+serviceaccount/default            0         14s
+serviceaccount/reasoning-engine   0         14s
+
+## image + versions
+reasoning-engine:0.1.0-dev
+{"ready": true, "version": "0.1.0-dev", "git_sha": "00239e4e9871e7fefef7e38e5ba7ad3eedb9faef", "llm_provider": "stub", "stores_dir": "/app/stores", "problems": []}
+
+## pod security
+uid=10001(app) gid=10001(app) groups=10001(app)
+{"app.kubernetes.io/name":"reasoning-engine","app.kubernetes.io/part-of":"reasoning-engine","kubernetes.io/metadata.name":"reasoning-engine","pod-security.kubernetes.io/enforce":"restricted","pod-security.kubernetes.io/enforce-version":"latest","pod-security.kubernetes.io/warn":"restricted"}
+ls: cannot access '/var/run/secrets/kubernetes.io': No such file or directory
+touch: cannot touch '/app/x': Read-only file system
+command terminated with exit code 1

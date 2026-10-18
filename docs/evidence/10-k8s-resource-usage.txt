@@ -1,0 +1,5 @@
+## kubectl top (2026-10-18T12:08:39Z), after a full in-pod benchmark run and a dashboard render
+NAME                                CPU(cores)   MEMORY(bytes)
+reasoning-engine-64d657dfdd-vvqg9   225m         50Mi
+NAME        CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)
+local-k3s   325m         16%      2527Mi          31%

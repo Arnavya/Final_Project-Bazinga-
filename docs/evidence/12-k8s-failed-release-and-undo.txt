@@ -1,0 +1,24 @@
+## failed release: tag 0.3.0-missing does not exist (2026-10-18T12:18:59Z)
+poller before: 12:18:56 ok=60 fail=0
+deployment.apps/reasoning-engine image updated
+deployment.apps/reasoning-engine annotated
+deployment.apps/reasoning-engine patched
+Waiting for deployment "reasoning-engine" rollout to finish: 1 old replicas are pending termination...
+error: deployment "reasoning-engine" exceeded its progress deadline
+rollout status exit=1
+NAME                                READY   STATUS         RESTARTS   AGE
+poller                              1/1     Running        0          97s
+reasoning-engine-5b5fc797c-nqkrs    1/1     Running        0          4m
+reasoning-engine-775d76ffbf-bq6f5   0/1     ErrImagePull   0          61s
+Available=True MinimumReplicasAvailable
+Progressing=False ProgressDeadlineExceeded
+--- old pod still serving; app reports:
+{"ready": true, "version": "0.2.0-dev", "git_sha": "8e8ed5427e96cdce93f3b3d6f7181234d11e8d0c", "llm_provider": "stub", "stores_dir": "/app/stores", "problems": []}
+## rollback: rollout undo
+deployment.apps/reasoning-engine rolled back
+deployment.apps/reasoning-engine patched
+deployment "reasoning-engine" successfully rolled out
+NAME                               READY   STATUS    RESTARTS   AGE
+poller                             1/1     Running   0          101s
+reasoning-engine-5b5fc797c-nqkrs   1/1     Running   0          4m4s
+poller after: 12:19:56 ok=180 fail=0
