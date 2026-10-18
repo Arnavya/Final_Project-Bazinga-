@@ -1,0 +1,4 @@
+ignored:
+  # FROM ${BASE_IMAGE}: the tag is set by the ARG default (python:3.12-slim); hadolint cannot
+  # resolve ARGs and reports a missing tag.
+  - DL3006
