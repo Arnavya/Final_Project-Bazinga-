@@ -150,7 +150,7 @@ def main() -> None:
          "LLM-8B distills; routing+dedup+write are local", dt,
          f"action={learned['action']} id={le['lesson_id']} type={le['type']}")
     print(f"        LESSON TEXT: {le['lesson_text']}")
-    print(f"        WROTE      : stores/lessons.json"
+    print("        WROTE      : stores/lessons.json"
           + ("  + stores/kg_overrides.json" if le["type"] == "factual" else "") + "\n")
 
     # 12 re-run V2 (repeats Phase A, now with the lesson available)

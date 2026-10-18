@@ -92,7 +92,6 @@ def ask(question: str) -> Dict[str, Any]:
 def teach(question: str, expert_answer: str, ai_answer: Dict[str, Any]) -> Dict[str, Any]:
     """Live human-in-the-loop: capture the expert answer, learn, and re-run (V2)."""
     cls = classify.classify(question)
-    is_ownership = cls["question_type"] == "ownership"
     scenario = {
         "id": f"ASK-{len(store.load_ask_log()) + 1:03d}",
         "question": question,

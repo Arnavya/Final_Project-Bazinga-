@@ -1,0 +1,132 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  IMAGE: reasoning-engine
+  KUBECONFORM_VERSION: "0.7.0"
+  GITLEAKS_VERSION: "8.28.0"
+  HADOLINT_VERSION: "2.12.0"
+
+jobs:
+  test:
+    name: Lint and unit tests
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: requirements-runtime.txt
+      - name: Install dependencies
+        run: pip install -r requirements-runtime.txt pytest==9.1.1 ruff==0.16.8
+      - name: Lint (ruff)
+        run: ruff check .
+      - name: Unit tests
+        run: pytest -q
+      - name: Build stores and check readiness
+        env:
+          EMBEDDING_MODEL: hashing
+          LLM_PROVIDER: stub
+        run: |
+          python data/build_dataset.py
+          python -m ingest.build_vectors
+          python -m ingest.build_graph
+          python -m engine.health
+      - name: Offline benchmark (end to end)
+        env:
+          EMBEDDING_MODEL: hashing
+          LLM_PROVIDER: stub
+        run: python run_all.py
+
+  security:
+    name: Secret scan and dependency audit
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0            # scan the whole history, not just the last commit
+      - name: Secret scan (gitleaks)
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar xz gitleaks
+          ./gitleaks git --redact --no-banner --exit-code 1 .
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Dependency audit (pip-audit, known CVEs)
+        run: |
+          pip install pip-audit==2.9.0
+          pip-audit -r requirements-runtime.txt --strict
+
+  manifests:
+    name: Kubernetes manifest validation
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install kubeconform
+        run: curl -sSfL "https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar xz kubeconform
+      - name: Render and validate (strict schema)
+        run: |
+          mkdir -p rendered
+          kubectl kustomize k8s/base > rendered/base.yaml
+          kubectl kustomize k8s/overlays/persistent > rendered/persistent.yaml
+          ./kubeconform -strict -summary -kubernetes-version 1.33.0 rendered/*.yaml
+      - name: Policy checks
+        run: |
+          # Fail if any rendered workload drops the hardening the project depends on.
+          for f in rendered/*.yaml; do
+            grep -q 'readOnlyRootFilesystem: true' "$f"
+            grep -q 'runAsNonRoot: true' "$f"
+            grep -q 'allowPrivilegeEscalation: false' "$f"
+            grep -q 'readinessProbe:' "$f"
+            grep -q 'livenessProbe:' "$f"
+            grep -q 'limits:' "$f"
+            # `! grep` would not trip `bash -e`, so test explicitly.
+            if grep -qE 'image: .*:latest' "$f"; then echo "$f: uses :latest"; exit 1; fi
+            if grep -q 'kind: Secret' "$f"; then echo "$f: contains a Secret"; exit 1; fi
+          done
+          echo "policy checks passed"
+
+  image:
+    name: Build, smoke-test and scan image
+    runs-on: ubuntu-24.04
+    needs: [test]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Lint Dockerfile (hadolint)
+        run: |
+          curl -sSfL -o hadolint "https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-x86_64"
+          chmod +x hadolint && ./hadolint Dockerfile
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - name: Build image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          load: true
+          push: false
+          tags: ${{ env.IMAGE }}:ci-${{ github.sha }}
+          build-args: |
+            APP_VERSION=ci-${{ github.sha }}
+            GIT_SHA=${{ github.sha }}
+      - name: Smoke test
+        run: scripts/smoke-test.sh "${IMAGE}:ci-${GITHUB_SHA}"
+      - name: Vulnerability scan (trivy)
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+        with:
+          image-ref: ${{ env.IMAGE }}:ci-${{ github.sha }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: "1"
