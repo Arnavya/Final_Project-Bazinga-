@@ -1,0 +1,240 @@
+#0 building with "default" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 3.66kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/local/ubuntu-noble-python:3.12
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 454B done
+#3 DONE 0.0s
+
+#4 [build 1/8] FROM docker.io/local/ubuntu-noble-python:3.12@sha256:38b3e532f53e59d5d6e314bf36c55b0d5a7a65d64b3cc8f90b7f9e1ac3b75b3f
+#4 resolve docker.io/local/ubuntu-noble-python:3.12@sha256:38b3e532f53e59d5d6e314bf36c55b0d5a7a65d64b3cc8f90b7f9e1ac3b75b3f 0.0s done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 143.80kB 0.0s done
+#5 DONE 0.0s
+
+#4 [build 1/8] FROM docker.io/local/ubuntu-noble-python:3.12@sha256:38b3e532f53e59d5d6e314bf36c55b0d5a7a65d64b3cc8f90b7f9e1ac3b75b3f
+#4 extracting sha256:ce6c4c4391a063b3ba74f926d172067ac0a51320749633525c7470a04f0811b7
+#4 extracting sha256:ce6c4c4391a063b3ba74f926d172067ac0a51320749633525c7470a04f0811b7 3.7s done
+#4 DONE 3.8s
+
+#6 [build 2/8] WORKDIR /app
+#6 DONE 0.4s
+
+#7 [runtime  2/12] RUN groupadd --system --gid 10001 app  && useradd --system --uid 10001 --gid 10001 --home-dir /app --shell /usr/sbin/nologin app
+#7 0.368 useradd warning: app's uid 10001 is greater than SYS_UID_MAX 999
+#7 DONE 0.4s
+
+#8 [build 3/8] COPY requirements-runtime.txt .
+#8 DONE 0.0s
+
+#9 [runtime  3/12] WORKDIR /app
+#9 DONE 0.0s
+
+#10 [build 4/8] RUN --mount=type=secret,id=pip_ca,required=false     if [ -f /run/secrets/pip_ca ]; then export PIP_CERT=/run/secrets/pip_ca; fi;     python3 -m venv /opt/venv  && /opt/venv/bin/pip install --no-compile -r requirements-runtime.txt
+#10 3.647 Collecting altair==6.3.0 (from -r requirements-runtime.txt (line 5))
+#10 3.706   Downloading altair-6.3.0-py3-none-any.whl.metadata (11 kB)
+#10 3.755 Collecting anyio==4.15.1 (from -r requirements-runtime.txt (line 6))
+#10 3.773   Downloading anyio-4.15.1-py3-none-any.whl.metadata (4.7 kB)
+#10 3.805 Collecting attrs==26.1.0 (from -r requirements-runtime.txt (line 7))
+#10 3.822   Downloading attrs-26.1.0-py3-none-any.whl.metadata (8.8 kB)
+#10 3.859 Collecting certifi==2026.7.22 (from -r requirements-runtime.txt (line 8))
+#10 3.877   Downloading certifi-2026.7.22-py3-none-any.whl.metadata (2.5 kB)
+#10 4.018 Collecting charset-normalizer==3.5.2 (from -r requirements-runtime.txt (line 9))
+#10 4.036   Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (46 kB)
+#10 4.039      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 46.4/46.4 kB 87.2 MB/s eta 0:00:00
+#10 4.077 Collecting click==8.5.0 (from -r requirements-runtime.txt (line 10))
+#10 4.094   Downloading click-8.5.0-py3-none-any.whl.metadata (2.6 kB)
+#10 4.121 Collecting h11==0.16.0 (from -r requirements-runtime.txt (line 11))
+#10 4.138   Downloading h11-0.16.0-py3-none-any.whl.metadata (8.3 kB)
+#10 4.169 Collecting idna==3.20 (from -r requirements-runtime.txt (line 12))
+#10 4.186   Downloading idna-3.20-py3-none-any.whl.metadata (7.2 kB)
+#10 4.213 Collecting itsdangerous==2.2.0 (from -r requirements-runtime.txt (line 13))
+#10 4.231   Downloading itsdangerous-2.2.0-py3-none-any.whl.metadata (1.9 kB)
+#10 4.267 Collecting Jinja2==3.1.6 (from -r requirements-runtime.txt (line 14))
+#10 4.285   Downloading jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+#10 4.329 Collecting jsonschema==4.26.0 (from -r requirements-runtime.txt (line 15))
+#10 4.346   Downloading jsonschema-4.26.0-py3-none-any.whl.metadata (7.6 kB)
+#10 4.379 Collecting jsonschema-specifications==2025.9.1 (from -r requirements-runtime.txt (line 16))
+#10 4.395   Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl.metadata (2.9 kB)
+#10 4.468 Collecting MarkupSafe==3.0.4 (from -r requirements-runtime.txt (line 17))
+#10 4.485   Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl.metadata (2.7 kB)
+#10 4.566 Collecting narwhals==2.27.1 (from -r requirements-runtime.txt (line 18))
+#10 4.585   Downloading narwhals-2.27.1-py3-none-any.whl.metadata (15 kB)
+#10 4.636 Collecting networkx==3.7 (from -r requirements-runtime.txt (line 19))
+#10 4.654   Downloading networkx-3.7-py3-none-any.whl.metadata (6.7 kB)
+#10 4.998 Collecting numpy==2.5.4 (from -r requirements-runtime.txt (line 20))
+#10 5.416   Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+#10 5.455 Collecting packaging==26.3 (from -r requirements-runtime.txt (line 21))
+#10 5.892   Downloading packaging-26.3-py3-none-any.whl.metadata (3.5 kB)
+#10 6.035 Collecting pandas==3.0.6 (from -r requirements-runtime.txt (line 22))
+#10 6.491   Downloading pandas-3.0.6-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+#10 6.501      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 10.7 MB/s eta 0:00:00
+#10 6.738 Collecting pillow==12.3.0 (from -r requirements-runtime.txt (line 23))
+#10 7.317   Downloading pillow-12.3.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+#10 7.514 Collecting protobuf==7.36.2 (from -r requirements-runtime.txt (line 24))
+#10 8.110   Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl.metadata (595 bytes)
+#10 8.255 Collecting pyarrow==26.0.0 (from -r requirements-runtime.txt (line 25))
+#10 8.748   Downloading pyarrow-26.0.0-cp312-cp312-manylinux_2_28_x86_64.whl.metadata (3.0 kB)
+#10 8.788 Collecting pydeck==0.9.3 (from -r requirements-runtime.txt (line 26))
+#10 9.329   Downloading pydeck-0.9.3-py2.py3-none-any.whl.metadata (4.2 kB)
+#10 9.361 Collecting python-dateutil==2.9.0.post0 (from -r requirements-runtime.txt (line 27))
+#10 9.654   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+#10 9.698 Collecting python-multipart==0.0.32 (from -r requirements-runtime.txt (line 28))
+#10 9.716   Downloading python_multipart-0.0.32-py3-none-any.whl.metadata (2.1 kB)
+#10 9.742 Collecting rank-bm25==0.2.2 (from -r requirements-runtime.txt (line 29))
+#10 9.760   Downloading rank_bm25-0.2.2-py3-none-any.whl.metadata (3.2 kB)
+#10 9.814 Collecting referencing==0.37.0 (from -r requirements-runtime.txt (line 30))
+#10 9.831   Downloading referencing-0.37.0-py3-none-any.whl.metadata (2.8 kB)
+#10 9.879 Collecting requests==2.34.2 (from -r requirements-runtime.txt (line 31))
+#10 9.899   Downloading requests-2.34.2-py3-none-any.whl.metadata (4.8 kB)
+#10 10.22 Collecting rpds-py==2026.9.1 (from -r requirements-runtime.txt (line 32))
+#10 10.24   Downloading rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (4.1 kB)
+#10 10.27 Collecting six==1.17.0 (from -r requirements-runtime.txt (line 33))
+#10 10.29   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+#10 10.34 Collecting starlette==1.8.0 (from -r requirements-runtime.txt (line 34))
+#10 10.36   Downloading starlette-1.8.0-py3-none-any.whl.metadata (6.6 kB)
+#10 10.43 Collecting streamlit==1.66.0 (from -r requirements-runtime.txt (line 35))
+#10 10.46   Downloading streamlit-1.66.0-py3-none-any.whl.metadata (10 kB)
+#10 10.49 Collecting typing_extensions==4.16.0 (from -r requirements-runtime.txt (line 36))
+#10 10.51   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+#10 10.56 Collecting urllib3==2.8.0 (from -r requirements-runtime.txt (line 37))
+#10 10.58   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+#10 10.63 Collecting uvicorn==0.54.0 (from -r requirements-runtime.txt (line 38))
+#10 10.64   Downloading uvicorn-0.54.0-py3-none-any.whl.metadata (6.6 kB)
+#10 10.70 Collecting watchdog==6.0.0 (from -r requirements-runtime.txt (line 39))
+#10 10.72   Downloading watchdog-6.0.0-py3-none-manylinux2014_x86_64.whl.metadata (44 kB)
+#10 10.72      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.3/44.3 kB 240.3 MB/s eta 0:00:00
+#10 10.93 Collecting websockets==17.2 (from -r requirements-runtime.txt (line 40))
+#10 10.95   Downloading websockets-17.2-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl.metadata (6.3 kB)
+#10 11.45 Downloading altair-6.3.0-py3-none-any.whl (797 kB)
+#10 11.50    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 797.2/797.2 kB 15.4 MB/s eta 0:00:00
+#10 11.52 Downloading anyio-4.15.1-py3-none-any.whl (132 kB)
+#10 11.53    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 132.1/132.1 kB 62.2 MB/s eta 0:00:00
+#10 11.54 Downloading attrs-26.1.0-py3-none-any.whl (67 kB)
+#10 11.55    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 67.5/67.5 kB 33.5 MB/s eta 0:00:00
+#10 11.57 Downloading certifi-2026.7.22-py3-none-any.whl (136 kB)
+#10 11.57    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.0/137.0 kB 58.4 MB/s eta 0:00:00
+#10 11.59 Downloading charset_normalizer-3.5.2-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (257 kB)
+#10 11.60    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 257.6/257.6 kB 18.6 MB/s eta 0:00:00
+#10 11.62 Downloading click-8.5.0-py3-none-any.whl (125 kB)
+#10 11.63    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 125.3/125.3 kB 23.5 MB/s eta 0:00:00
+#10 11.65 Downloading h11-0.16.0-py3-none-any.whl (37 kB)
+#10 11.67 Downloading idna-3.20-py3-none-any.whl (69 kB)
+#10 11.67    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 69.6/69.6 kB 54.4 MB/s eta 0:00:00
+#10 11.69 Downloading itsdangerous-2.2.0-py3-none-any.whl (16 kB)
+#10 11.71 Downloading jinja2-3.1.6-py3-none-any.whl (134 kB)
+#10 11.72    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 134.9/134.9 kB 21.5 MB/s eta 0:00:00
+#10 11.73 Downloading jsonschema-4.26.0-py3-none-any.whl (90 kB)
+#10 11.74    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 90.6/90.6 kB 26.7 MB/s eta 0:00:00
+#10 11.76 Downloading jsonschema_specifications-2025.9.1-py3-none-any.whl (18 kB)
+#10 11.77 Downloading markupsafe-3.0.4-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl (22 kB)
+#10 11.79 Downloading narwhals-2.27.1-py3-none-any.whl (483 kB)
+#10 11.82    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 483.2/483.2 kB 16.2 MB/s eta 0:00:00
+#10 11.84 Downloading networkx-3.7-py3-none-any.whl (2.1 MB)
+#10 11.98    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 2.1/2.1 MB 15.2 MB/s eta 0:00:00
+#10 12.00 Downloading numpy-2.5.4-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+#10 13.43    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 12.1 MB/s eta 0:00:00
+#10 13.45 Downloading packaging-26.3-py3-none-any.whl (129 kB)
+#10 13.46    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 130.0/130.0 kB 21.3 MB/s eta 0:00:00
+#10 13.47 Downloading pandas-3.0.6-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (10.8 MB)
+#10 14.14    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.8/10.8 MB 16.3 MB/s eta 0:00:00
+#10 14.16 Downloading pillow-12.3.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+#10 14.52    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 19.2 MB/s eta 0:00:00
+#10 14.54 Downloading protobuf-7.36.2-cp310-abi3-manylinux2014_x86_64.whl (343 kB)
+#10 14.55    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 343.2/343.2 kB 25.6 MB/s eta 0:00:00
+#10 14.57 Downloading pyarrow-26.0.0-cp312-cp312-manylinux_2_28_x86_64.whl (53.9 MB)
+#10 19.43    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 53.9/53.9 MB 11.5 MB/s eta 0:00:00
+#10 19.45 Downloading pydeck-0.9.3-py2.py3-none-any.whl (11.4 MB)
+#10 20.18    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 11.4/11.4 MB 15.7 MB/s eta 0:00:00
+#10 20.20 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#10 20.22    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 229.9/229.9 kB 25.7 MB/s eta 0:00:00
+#10 20.23 Downloading python_multipart-0.0.32-py3-none-any.whl (30 kB)
+#10 20.25 Downloading rank_bm25-0.2.2-py3-none-any.whl (8.6 kB)
+#10 20.27 Downloading referencing-0.37.0-py3-none-any.whl (26 kB)
+#10 20.29 Downloading requests-2.34.2-py3-none-any.whl (73 kB)
+#10 20.29    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 73.1/73.1 kB 259.2 MB/s eta 0:00:00
+#10 20.31 Downloading rpds_py-2026.9.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (371 kB)
+#10 20.33    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 371.3/371.3 kB 20.5 MB/s eta 0:00:00
+#10 20.35 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#10 20.36 Downloading starlette-1.8.0-py3-none-any.whl (79 kB)
+#10 20.37    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.6/79.6 kB 100.1 MB/s eta 0:00:00
+#10 20.38 Downloading streamlit-1.66.0-py3-none-any.whl (10.4 MB)
+#10 20.94    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.4/10.4 MB 18.5 MB/s eta 0:00:00
+#10 20.96 Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+#10 20.96    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 215.6 MB/s eta 0:00:00
+#10 20.98 Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+#10 20.99    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 135.7/135.7 kB 24.0 MB/s eta 0:00:00
+#10 21.01 Downloading uvicorn-0.54.0-py3-none-any.whl (87 kB)
+#10 21.01    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.4/87.4 kB 35.6 MB/s eta 0:00:00
+#10 21.03 Downloading watchdog-6.0.0-py3-none-manylinux2014_x86_64.whl (79 kB)
+#10 21.03    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.1/79.1 kB 42.6 MB/s eta 0:00:00
+#10 21.05 Downloading websockets-17.2-cp312-cp312-manylinux1_x86_64.manylinux_2_28_x86_64.manylinux_2_5_x86_64.whl (225 kB)
+#10 21.06    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 225.3/225.3 kB 17.6 MB/s eta 0:00:00
+#10 21.51 Installing collected packages: websockets, watchdog, urllib3, typing_extensions, six, rpds-py, python-multipart, pyarrow, protobuf, pillow, packaging, numpy, networkx, narwhals, MarkupSafe, itsdangerous, idna, h11, click, charset-normalizer, certifi, attrs, uvicorn, requests, referencing, rank-bm25, python-dateutil, Jinja2, anyio, starlette, pydeck, pandas, jsonschema-specifications, jsonschema, altair, streamlit
+#10 25.21 Successfully installed Jinja2-3.1.6 MarkupSafe-3.0.4 altair-6.3.0 anyio-4.15.1 attrs-26.1.0 certifi-2026.7.22 charset-normalizer-3.5.2 click-8.5.0 h11-0.16.0 idna-3.20 itsdangerous-2.2.0 jsonschema-4.26.0 jsonschema-specifications-2025.9.1 narwhals-2.27.1 networkx-3.7 numpy-2.5.4 packaging-26.3 pandas-3.0.6 pillow-12.3.0 protobuf-7.36.2 pyarrow-26.0.0 pydeck-0.9.3 python-dateutil-2.9.0.post0 python-multipart-0.0.32 rank-bm25-0.2.2 referencing-0.37.0 requests-2.34.2 rpds-py-2026.9.1 six-1.17.0 starlette-1.8.0 streamlit-1.66.0 typing_extensions-4.16.0 urllib3-2.8.0 uvicorn-0.54.0 watchdog-6.0.0 websockets-17.2
+#10 DONE 26.3s
+
+#11 [build 5/8] COPY engine/ engine/
+#11 DONE 0.1s
+
+#12 [build 6/8] COPY ingest/ ingest/
+#12 DONE 0.0s
+
+#13 [build 7/8] COPY data/ data/
+#13 DONE 0.0s
+
+#14 [build 8/8] RUN /opt/venv/bin/python data/build_dataset.py  && /opt/venv/bin/python -m ingest.build_vectors  && /opt/venv/bin/python -m ingest.build_graph  && /opt/venv/bin/python -m engine.health
+#14 0.112 Dataset written to /app/data/sources
+#14 0.112   services=6 releases=3 incidents=3 tickets=8 commits=6 slack=8 wiki=7
+#14 0.112   scenarios=10
+#14 0.112   includes FALSE leads (WIKI-inc9-postmortem, WIKI-release-v2.1, TICKET-180, stale WIKI-notifications) and NOISE (search/billing).
+#14 0.428 [build_vectors] indexed 35 chunks (embedder: ok) -> vector_store.npz
+#14 0.981 [build_graph] 37 nodes, 52 edges -> graph.json
+#14 1.043 {"ready": true, "version": "dev", "git_sha": "unknown", "llm_provider": "stub", "stores_dir": "/app/stores-seed", "problems": []}
+#14 DONE 1.1s
+
+#15 [runtime  4/12] COPY --from=build /opt/venv /opt/venv
+#15 DONE 1.1s
+
+#16 [runtime  5/12] COPY --from=build /app/data /app/data
+#16 DONE 0.1s
+
+#17 [runtime  6/12] COPY --from=build /app/stores-seed /app/stores-seed
+#17 DONE 0.0s
+
+#18 [runtime  7/12] COPY engine/ engine/
+#18 DONE 0.0s
+
+#19 [runtime  8/12] COPY ingest/ ingest/
+#19 DONE 0.0s
+
+#20 [runtime  9/12] COPY .streamlit/ .streamlit/
+#20 DONE 0.0s
+
+#21 [runtime 10/12] COPY app.py pipeline.py run_all.py run_scenario.py ./
+#21 DONE 0.0s
+
+#22 [runtime 11/12] COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#22 DONE 0.0s
+
+#23 [runtime 12/12] RUN chmod 0755 /usr/local/bin/entrypoint.sh  && mkdir -p /app/stores  && chown 10001:10001 /app/stores
+#23 DONE 0.1s
+
+#24 exporting to image
+#24 exporting layers
+#24 exporting layers 16.3s done
+#24 exporting manifest sha256:1947ffb60afba096783e1935cd713c9f2be3e441a252fd173d97e631c93599ca done
+#24 exporting config sha256:447b43b8ec3cd7a7a55437390bc196c1d8addcc8f8b02c9d76ee0391344d5482 done
+#24 exporting attestation manifest sha256:e432c88ac11f1a681d831676875bee092936758d427f2177f2006efbe89f2af0 0.0s done
+#24 exporting manifest list sha256:6dcb18390577961b4693458d2ce3e9b584554163b00ecc6a405f6cb905a9cd5a done
+#24 naming to docker.io/library/reasoning-engine:0.1.0-dev done
+#24 unpacking to docker.io/library/reasoning-engine:0.1.0-dev
+#24 unpacking to docker.io/library/reasoning-engine:0.1.0-dev 3.2s done
+#24 DONE 19.6s

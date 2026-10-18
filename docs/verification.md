@@ -1,7 +1,7 @@
 # Verification
 
 Every check below was run on 2026-10-18 in the build environment, except those marked BLOCKED.
-Raw output is in `docs/evidence/` (file numbers in the last column).
+Raw output is in `docs/evidence/` (file numbers in the last column; files are `.txt`).
 
 Status: **PASS** ran and succeeded · **FAIL→FIXED** ran, failed, fixed, re-run passed ·
 **BLOCKED** could not run here (reason given).
