@@ -11,8 +11,8 @@ This file records the project exactly as it was received, before any change on t
 | Purpose | Answers questions about a company's internal knowledge (Slack, tickets, wiki, commits, incidents, releases), shows its reasoning, takes an expert correction, stores a lesson, and answers better on the re-run |
 | Upstream baseline commit | `2ffe22a857d4a5637c5d247518773280722ae9e9` |
 | Upstream branch | `main` |
-| Upstream repository | GitHub repository `Final_Project-Bazinga-` (owner not recorded in the received files) |
-| Permanent URL | `https://github.com/<owner>/Final_Project-Bazinga-/commit/2ffe22a857d4a5637c5d247518773280722ae9e9` — replace `<owner>` |
+| Upstream repository | https://github.com/Arnavya/Final_Project-Bazinga- |
+| Permanent URL | `https://github.com/Arnavya/Final_Project-Bazinga-/commit/2ffe22a857d4a5637c5d247518773280722ae9e9` |
 | Local import commit | `ac9abc84e541532176e0e04a3c82de5672dc2751` on local `main` |
 
 ### How the baseline hash was established

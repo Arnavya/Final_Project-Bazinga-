@@ -7,8 +7,7 @@ change. The final changes are listed separately in `docs/submission-summary.md`.
 
 `2ffe22a857d4a5637c5d247518773280722ae9e9` on branch `main`
 
-Permanent URL: `https://github.com/<owner>/Final_Project-Bazinga-/commit/2ffe22a857d4a5637c5d247518773280722ae9e9`
-(replace `<owner>` with the GitHub account that hosts the repository)
+Permanent URL: `https://github.com/Arnavya/Final_Project-Bazinga-/commit/2ffe22a857d4a5637c5d247518773280722ae9e9`
 
 ## 2. Existing deployment and DevOps features
 
