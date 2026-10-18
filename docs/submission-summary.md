@@ -23,10 +23,10 @@ push for the final hashes.
 | `855c2a8` | 2026-10-18 12:26 | test: record verification results and operational evidence | Verification |
 | `7f4321b` | 2026-10-18 12:28 | docs: complete README, decisions, viva notes and transfer guide | Documentation |
 | `b256e6d` | 2026-10-18 12:29 | security: allowlist documentation placeholders in gitleaks | Security |
-| `cd98f6e` | 2026-10-18 12:31 | docs: update commit list and transfer guide after final review | Documentation |
-| `f6dfebb` | 2026-10-18 12:32 | test: add image build log that .gitignore had excluded | Verification |
+| `cd98f6e` | 2026-10-18 12:30 | docs: update commit list and transfer guide after final review | Documentation |
+| `f6dfebb` | 2026-10-18 12:30 | test: add image build log that .gitignore had excluded | Verification |
 
-The commit that adds these two rows is the last one; `git log --oneline ac9abc8..HEAD` is authoritative.
+The commits that add these rows come after them; `git log --oneline ac9abc8..HEAD` is authoritative.
 
 ## Changes by rubric area
 
