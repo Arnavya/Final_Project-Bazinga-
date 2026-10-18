@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reasoning-engine
+spec:
+  # One replica: learning state is a file store owned by one process (see docs/decisions.md).
+  replicas: 1
+  revisionHistoryLimit: 5          # ReplicaSets kept for `kubectl rollout undo`
+  progressDeadlineSeconds: 180     # rollout reported failed if not Available in 3 min
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1                  # start the new pod first ...
+      maxUnavailable: 0            # ... and keep the old one until the new one is Ready
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: reasoning-engine
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: reasoning-engine
+    spec:
+      serviceAccountName: reasoning-engine
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: reasoning-engine          # tag set by kustomization.yaml
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8501
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: reasoning-engine-config
+          env:
+            - name: GROQ_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: reasoning-engine-secrets
+                  key: GROQ_API_KEY
+                  optional: true           # absent => offline stub mode
+          startupProbe:                    # allows up to 60 s for the first start
+            httpGet:
+              path: /_stcore/health
+              port: http
+            periodSeconds: 2
+            failureThreshold: 30
+          readinessProbe:                  # stores present, parseable, writable
+            exec:
+              command: ["python", "-m", "engine.health"]
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          livenessProbe:                   # web server responsive
+            httpGet:
+              path: /_stcore/health
+              port: http
+            periodSeconds: 15
+            timeoutSeconds: 3
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 100m
+              memory: 192Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          volumeMounts:
+            - name: stores
+              mountPath: /app/stores
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: stores                     # learning memory; replaced by a PVC in overlays/persistent
+          emptyDir:
+            sizeLimit: 100Mi
+        - name: tmp
+          emptyDir:
+            sizeLimit: 64Mi
