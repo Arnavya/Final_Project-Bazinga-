@@ -6,10 +6,14 @@ skip reranking and keep the fused order — the pipeline still works.
 """
 from __future__ import annotations
 
+import logging
 from functools import lru_cache
 from typing import List, Optional, Tuple
 
 from engine import config
+from engine.logs import get_logger, log_event
+
+log = get_logger("rerank")
 
 
 @lru_cache(maxsize=1)
@@ -18,7 +22,9 @@ def _get_reranker():
         from sentence_transformers import CrossEncoder  # lazy import
         return CrossEncoder(config.RERANKER_MODEL)
     except Exception as exc:  # noqa: BLE001
-        print(f"[rerank] cross-encoder unavailable ({exc}); keeping fused order.")
+        # Expected in the container image (no torch). Logged once: _get_reranker is cached.
+        log_event(log, "rerank.unavailable", level=logging.WARNING,
+                  reason=f"{type(exc).__name__}: {exc}"[:200], effect="keeping fused order")
         return None
 
 

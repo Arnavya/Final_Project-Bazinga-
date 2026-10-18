@@ -9,6 +9,7 @@ product.
 from __future__ import annotations
 
 import hashlib
+import logging
 import re
 from functools import lru_cache
 from typing import List
@@ -16,6 +17,9 @@ from typing import List
 import numpy as np
 
 from engine import config
+from engine.logs import get_logger, log_event
+
+log = get_logger("embeddings")
 
 _TOKEN_RE = re.compile(r"[a-z0-9]+")
 
@@ -81,8 +85,8 @@ def get_embedder():
         try:
             return _STEmbedder(config.EMBEDDING_MODEL)
         except Exception as exc:  # noqa: BLE001 - any import/load failure -> fallback
-            print(f"[embeddings] sentence-transformers unavailable ({exc}); "
-                  f"using hashing fallback.")
+            log_event(log, "embeddings.fallback", level=logging.WARNING,
+                      reason=f"{type(exc).__name__}: {exc}"[:200], effect="using hashing embedder")
     return _HashingEmbedder()
 
 
