@@ -16,8 +16,14 @@ kubectl -n "$NS" rollout status "$DEPLOY" --timeout=180s
 echo "== revision history"
 kubectl -n "$NS" rollout history "$DEPLOY"
 
+# Old pods can still show phase Running while terminating after a rollout; skip anything that
+# has a deletionTimestamp so only the pods that will keep serving are checked.
+pods="$(kubectl -n "$NS" get pods -l "$SEL" --field-selector=status.phase=Running \
+  -o go-template='{{range .items}}{{if not .metadata.deletionTimestamp}}pod/{{.metadata.name}}{{"\n"}}{{end}}{{end}}')"
+[ -n "$pods" ] || { echo "FAIL no running pods"; exit 1; }
+
 fail=0
-for pod in $(kubectl -n "$NS" get pods -l "$SEL" --field-selector=status.phase=Running -o name); do
+for pod in $pods; do
   image="$(kubectl -n "$NS" get "$pod" -o jsonpath='{.spec.containers[0].image}')"
   ready="$(kubectl -n "$NS" get "$pod" -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}')"
   health="$(kubectl -n "$NS" exec "$pod" -- python -m engine.health || true)"
