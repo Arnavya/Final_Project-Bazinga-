@@ -1,0 +1,20 @@
+## re-apply Git state (newTag 0.2.0-dev) and verify immediately, old pod terminating (2026-10-18T12:20:46Z)
+deployment.apps/reasoning-engine configured
+deployment.apps/reasoning-engine annotated
+== rollout status
+Waiting for deployment "reasoning-engine" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "reasoning-engine" rollout to finish: 1 old replicas are pending termination...
+deployment "reasoning-engine" successfully rolled out
+== revision history
+deployment.apps/reasoning-engine
+REVISION  CHANGE-CAUSE
+3         release 0.3.0-missing (bad tag)
+5         release 0.1.0-dev
+6         release 0.2.0-dev (git re-apply)
+
+pod/reasoning-engine-5b5fc797c-bkzpg image=reasoning-engine:0.2.0-dev ready=True app_version=0.2.0-dev
+RELEASE 0.2.0-dev VERIFIED
+NAME                               READY   STATUS    RESTARTS   AGE
+poller                             1/1     Running   0          2m27s
+reasoning-engine-5b5fc797c-bkzpg   1/1     Running   0          4s
+poller: 12:20:47 ok=280 fail=0

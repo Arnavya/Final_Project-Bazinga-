@@ -1,0 +1,76 @@
+## availability poller: GET http://reasoning-engine.reasoning-engine.svc/_stcore/health every 0.5 s from a pod in the namespace
+## started 12:18:2x UTC (after the k3s restart); spans the failed release, undo, rollback to rev 1, git re-apply,
+## the switch to overlays/persistent (Recreate) and back. Every FAIL line is printed; counters every 20 polls.
+12:18:36 ok=20 fail=0
+12:18:46 ok=40 fail=0
+12:18:56 ok=60 fail=0
+12:19:06 ok=80 fail=0
+12:19:16 ok=100 fail=0
+12:19:26 ok=120 fail=0
+12:19:36 ok=140 fail=0
+12:19:46 ok=160 fail=0
+12:19:56 ok=180 fail=0
+12:20:06 ok=200 fail=0
+12:20:17 ok=220 fail=0
+12:20:27 ok=240 fail=0
+12:20:37 ok=260 fail=0
+12:20:47 ok=280 fail=0
+12:20:57 ok=300 fail=0
+12:21:06 FAIL URLError
+12:21:06 FAIL URLError
+12:21:07 FAIL URLError
+12:21:07 ok=317 fail=3
+12:21:07 FAIL URLError
+12:21:08 FAIL URLError
+12:21:08 FAIL URLError
+12:21:17 ok=334 fail=6
+12:21:18 FAIL URLError
+12:21:21 FAIL URLError
+12:21:21 FAIL URLError
+12:21:22 FAIL URLError
+12:21:22 FAIL URLError
+12:21:23 FAIL URLError
+12:21:23 FAIL URLError
+12:21:24 FAIL URLError
+12:21:24 FAIL URLError
+12:21:25 FAIL URLError
+12:21:25 FAIL URLError
+12:21:26 FAIL URLError
+12:21:29 FAIL URLError
+12:21:29 ok=341 fail=19
+12:21:30 FAIL URLError
+12:21:30 FAIL URLError
+12:21:31 FAIL URLError
+12:21:39 ok=358 fail=22
+12:21:49 ok=378 fail=22
+12:21:59 ok=398 fail=22
+12:22:09 ok=418 fail=22
+12:22:19 ok=438 fail=22
+12:22:30 ok=458 fail=22
+12:22:40 ok=478 fail=22
+12:22:50 ok=498 fail=22
+12:23:00 ok=518 fail=22
+12:23:10 ok=538 fail=22
+12:23:20 ok=558 fail=22
+12:23:30 ok=578 fail=22
+12:23:40 ok=598 fail=22
+12:23:50 ok=618 fail=22
+12:24:00 ok=638 fail=22
+12:24:10 ok=658 fail=22
+12:24:20 ok=678 fail=22
+12:24:31 ok=698 fail=22
+12:24:41 ok=718 fail=22
+12:24:51 ok=738 fail=22
+12:25:01 ok=758 fail=22
+12:25:11 ok=778 fail=22
+
+## Reading (added after the run)
+All 22 failures fall between 12:21:06 and 12:21:31 UTC. That window is the persistence test
+(15-k8s-learning-memory-persistence.txt, started 12:21:04): the only pod was deleted on purpose
+(single replica, so no other pod could serve), the Deployment was switched to the persistent
+overlay whose strategy is Recreate (old pod stops before the new one starts), and the pod was
+deleted again. Those outages are the expected cost of one replica and of Recreate.
+Zero failures between 12:18:26 and 12:21:04, the window covering the failed 0.3.0-missing
+release, rollout undo, rollback to revision 1, and the Git re-apply of 0.2.0-dev (RollingUpdate,
+maxSurge 1, maxUnavailable 0). Also zero after 12:21:31, including the switch back to base.
+Granularity is 0.5 s, so an interruption shorter than that could be missed.

@@ -50,6 +50,104 @@ no downloads, and no built stores.
 
 ---
 
+## Prerequisites
+
+| Use | Needs |
+|---|---|
+| Local run | Python 3.12 or 3.13 (both tested), `bash` |
+| Container | Docker 23+ with BuildKit |
+| Kubernetes | any cluster ≥ 1.27 with NetworkPolicy support (k3s, kind, minikube, managed); `kubectl` with built-in kustomize |
+| Optional | metrics-server for `kubectl top`; a default StorageClass for the persistent overlay |
+
+## Run in a container
+
+```bash
+docker build -t reasoning-engine:dev \
+  --build-arg APP_VERSION=dev --build-arg GIT_SHA=$(git rev-parse HEAD) .
+docker run --rm -p 8501:8501 reasoning-engine:dev                         # offline stub mode
+docker run --rm -p 8501:8501 -e GROQ_API_KEY=... reasoning-engine:dev     # Groq LLM
+scripts/smoke-test.sh reasoning-engine:dev                                # hardened smoke test
+```
+
+The image installs exact pins from `requirements-runtime.txt` (no torch), builds the dataset and
+stores at build time with the hashing embedder, runs as UID 10001, and has a HEALTHCHECK on
+Streamlit's `/_stcore/health`. Learned state goes to `STORES_DIR` (`/app/stores`).
+`python -m engine.health` prints readiness as JSON and exits 1 if the stores are missing or broken.
+
+## Deploy to Kubernetes
+
+```bash
+# load the image into a local cluster (or set newName to your registry in k8s/base/kustomization.yaml)
+kind load docker-image reasoning-engine:<tag>          # or: docker save ... | sudo k3s ctr images import -
+# set newTag in k8s/base/kustomization.yaml to <tag>, then:
+kubectl apply -k k8s/base                              # emptyDir state
+kubectl apply -k k8s/overlays/persistent               # or: lessons kept on a PVC
+kubectl -n reasoning-engine rollout status deploy/reasoning-engine
+kubectl -n reasoning-engine port-forward svc/reasoning-engine 8501:80   # open http://localhost:8501
+```
+
+Optional Groq key (never committed):
+
+```bash
+kubectl -n reasoning-engine create secret generic reasoning-engine-secrets --from-literal=GROQ_API_KEY='<key>'
+kubectl -n reasoning-engine rollout restart deploy/reasoning-engine
+```
+
+What is deployed: namespace with Pod Security `restricted`, ServiceAccount without a token,
+ConfigMap, Deployment (1 replica, RollingUpdate surge 1 / unavailable 0, startup + liveness on
+`/_stcore/health`, readiness on `python -m engine.health`, requests 100m/192Mi, limits 1 CPU/512Mi,
+non-root, read-only root FS, no capabilities, seccomp), ClusterIP Service, NetworkPolicy.
+
+## CI/CD
+
+`.github/workflows/ci.yml` runs on every pull request and push to `main`:
+ruff + pytest + store build + readiness + offline benchmark; gitleaks over full history + pip-audit;
+kustomize render + kubeconform + policy checks; hadolint + image build + smoke test + trivy.
+`.github/workflows/release.yml` runs on `v*.*.*` tags and pushes
+`ghcr.io/<owner>/reasoning-engine:<version>`. Deploying a release is a reviewed change to
+`newTag` in `k8s/base/kustomization.yaml`.
+
+## Release and rollback
+
+```bash
+scripts/verify-release.sh <version>                                     # rollout, image tag, Ready, app version
+kubectl -n reasoning-engine rollout history deploy/reasoning-engine
+kubectl -n reasoning-engine rollout undo deploy/reasoning-engine [--to-revision=N]
+```
+
+Full procedure, log events and troubleshooting: `docs/operations.md`.
+
+## Security
+
+Secrets never in Git or images; non-root read-only container; restricted pod security; no API
+token; NetworkPolicy; exact dependency pins with pip-audit; SHA-pinned Actions; Dependabot.
+Details and known gaps: `docs/security.md`.
+
+## Logs and troubleshooting
+
+`LOG_FORMAT=json` (default in the image) writes one JSON event per line to stdout:
+`ask.completed` (latency, grounded, confidence), `teach.completed`, `llm.fallback_to_stub`, etc.
+Question text is never logged. `kubectl -n reasoning-engine logs deploy/reasoning-engine`.
+Symptom → cause table: `docs/operations.md` §5.
+
+## Verification
+
+34 checks, run locally on Docker and k3s, with raw output: `docs/verification.md`, `docs/evidence/`.
+Not verified here: build on the `python:3.12-slim` base (Docker Hub blocked), trivy, the GitHub-hosted
+workflow runs, and the Groq LLM path.
+
+## Known limitations
+
+- One replica. Lessons are JSON files written by one process; two pods would diverge or overwrite.
+- Base deployment keeps lessons in `emptyDir`: lost when the pod is replaced. The persistent overlay fixes that but uses `Recreate`, so releases have a short outage.
+- No authentication in front of the dashboard.
+- No metrics endpoint; observability is logs plus `kubectl top`.
+- Container image uses the hashing embedder (no torch), which is weaker than bge-small.
+
+More: `docs/architecture.md`, `docs/decisions.md`, `docs/baseline.md`.
+
+---
+
 ## What you'll see
 
 `run_all.py` runs each question through V1 (no learning), captures the expert answer, creates
@@ -129,8 +227,17 @@ engine/
 pipeline.py               orchestration (benchmark + live ask/teach)
 run_all.py / run_scenario.py   CLI
 app.py                    Streamlit dashboard
-tests/                    pytest unit tests (retrieval, scoring, metrics; offline)
+tests/                    pytest unit tests (retrieval, scoring, metrics, ops; offline)
 setup.sh                  one-shot: venv + deps + dataset + stores + .env
+engine/health.py          readiness check (python -m engine.health)
+engine/logs.py            structured stdout logging
+Dockerfile, docker/       container image and entrypoint
+requirements-runtime.txt  exact pins for the image
+k8s/base/                 Kubernetes manifests (kustomize)
+k8s/overlays/persistent/  PVC-backed learning memory
+.github/workflows/        CI and tag-driven release
+scripts/                  smoke-test, verify-release, ui-probe
+docs/                     baseline, architecture, decisions, operations, security, verification
 ```
 
 ---

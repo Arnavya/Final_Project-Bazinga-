@@ -22,3 +22,7 @@ venv/
 .idea/
 .vscode/
 
+
+# Kubernetes secrets are created with kubectl, never committed
+k8s/**/secret*.yaml
+!k8s/**/secret*.example.yaml

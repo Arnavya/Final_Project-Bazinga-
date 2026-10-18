@@ -1,0 +1,9 @@
+## NetworkPolicy enforcement test from inside the app pod
+dns kubernetes.default -> 10.43.0.1
+tcp kubernetes API 10.43.0.1:443 -> BLOCKED(ConnectionRefusedError)
+tcp coredns 10.43.0.10:53 -> CONNECTED
+
+## control: NetworkPolicy deleted, same test (policy re-applied afterwards)
+dns kubernetes.default -> 10.43.0.1
+tcp kubernetes API 10.43.0.1:443 -> CONNECTED
+tcp coredns 10.43.0.10:53 -> CONNECTED

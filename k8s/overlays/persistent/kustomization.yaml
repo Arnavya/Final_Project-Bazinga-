@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Same app, but learned lessons survive pod restarts and new releases.
+resources:
+  - ../../base
+  - pvc.yaml
+namespace: reasoning-engine
+patches:
+  - path: deployment-patch.yaml

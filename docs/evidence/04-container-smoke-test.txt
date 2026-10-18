@@ -1,0 +1,14 @@
+== waiting for liveness
+PASS liveness after 2s
+== readiness
+{"ready": true, "version": "0.1.0-dev", "git_sha": "00239e4e9871e7fefef7e38e5ba7ad3eedb9faef", "llm_provider": "stub", "stores_dir": "/app/stores", "problems": []}
+== runs as non-root
+PASS uid=10001
+== code is read-only
+PASS code directory read-only
+== one question end to end
+{"ts": "2026-10-18T12:02:06.329Z", "level": "INFO", "logger": "pipeline", "msg": "ask.completed", "version": "0.1.0-dev", "event": "ask.completed", "qid": "2bce41258937", "q_len": 33, "latency_ms": 8, "grounded": true, "confidence": 0.95, "provider": "stub"}
+PASS ask grounded=True confidence=0.95
+== dashboard script renders
+PASS app.py rendered, tabs=3
+ALL SMOKE CHECKS PASSED

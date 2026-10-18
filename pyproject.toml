@@ -1,0 +1,16 @@
+# Tool configuration only (the project is not packaged).
+
+[tool.ruff]
+target-version = "py312"
+line-length = 110
+extend-exclude = [".venv", "stores"]
+
+[tool.ruff.lint]
+# Correctness only: syntax errors, undefined names, unused imports/variables.
+# Style rules are not enforced so the original code is not reformatted wholesale.
+select = ["E9", "F"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Make `pytest` (not only `python -m pytest`) find the top-level packages.
+pythonpath = ["."]

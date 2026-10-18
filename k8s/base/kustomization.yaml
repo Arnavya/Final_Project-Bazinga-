@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: reasoning-engine
+labels:
+  - pairs:
+      app.kubernetes.io/name: reasoning-engine
+      app.kubernetes.io/part-of: reasoning-engine
+    includeSelectors: false
+resources:
+  - namespace.yaml
+  - serviceaccount.yaml
+  - configmap.yaml
+  - deployment.yaml
+  - service.yaml
+  - networkpolicy.yaml
+# Release control: the deployed version is changed here (or with `kustomize edit set image`),
+# committed, and applied. Never deploy :latest.
+images:
+  - name: reasoning-engine
+    newName: reasoning-engine
+    newTag: 0.2.0-dev

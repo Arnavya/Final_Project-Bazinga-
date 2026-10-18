@@ -1,0 +1,19 @@
+## learning memory across pod replacement (2026-10-18T12:21:04Z)
+### base (emptyDir)
+lessons: 1 answers: 1
+after pod replaced:
+lessons: 0 answers: 0
+### overlays/persistent (PVC)
+persistentvolumeclaim/reasoning-engine-stores created
+deployment.apps/reasoning-engine configured
+Waiting for deployment "reasoning-engine" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "reasoning-engine" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "reasoning-engine" rollout to finish: 0 out of 1 new replicas have been updated...
+Waiting for deployment "reasoning-engine" rollout to finish: 0 of 1 updated replicas are available...
+deployment "reasoning-engine" successfully rolled out
+NAME                      STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+reasoning-engine-stores   Bound    pvc-f7453f6e-e94b-4f7b-8a14-043d6edb0ad7   1Gi        RWO            local-path     <unset>                 8s
+lessons: 1 answers: 1
+after pod replaced:
+lessons: 1 answers: 1
+strategy=Recreate

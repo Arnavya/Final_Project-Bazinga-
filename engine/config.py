@@ -14,14 +14,6 @@ DATA_DIR = BASE_DIR / "data"
 SOURCES_DIR = DATA_DIR / "sources"
 SCENARIOS_FILE = DATA_DIR / "scenarios.json"
 
-STORES_DIR = BASE_DIR / "stores"
-VECTOR_STORE_FILE = STORES_DIR / "vector_store.npz"
-VECTOR_META_FILE = STORES_DIR / "vector_meta.json"
-GRAPH_FILE = STORES_DIR / "graph.json"
-LESSONS_FILE = STORES_DIR / "lessons.json"
-KG_OVERRIDES_FILE = STORES_DIR / "kg_overrides.json"
-ANSWERS_FILE = STORES_DIR / "question_answers.json"   # exact-question expert answers
-
 
 # --- Minimal .env loader (avoids a python-dotenv dependency) ---
 def _load_dotenv(path: Path) -> None:
@@ -37,6 +29,31 @@ def _load_dotenv(path: Path) -> None:
 
 
 _load_dotenv(BASE_DIR / ".env")
+
+
+# STORES_DIR can be pointed at a separate writable volume (container / Kubernetes);
+# default keeps the original location next to the code.
+STORES_DIR = Path(os.environ.get("STORES_DIR", str(BASE_DIR / "stores"))).resolve()
+VECTOR_STORE_FILE = STORES_DIR / "vector_store.npz"
+VECTOR_META_FILE = STORES_DIR / "vector_meta.json"
+GRAPH_FILE = STORES_DIR / "graph.json"
+LESSONS_FILE = STORES_DIR / "lessons.json"
+KG_OVERRIDES_FILE = STORES_DIR / "kg_overrides.json"
+ANSWERS_FILE = STORES_DIR / "question_answers.json"   # exact-question expert answers
+
+# Files the app cannot answer without (built by the ingest step).
+REQUIRED_STORE_FILES = (VECTOR_STORE_FILE, VECTOR_META_FILE, GRAPH_FILE)
+
+
+# --- Release identification ---
+# Set at image build time (Dockerfile build args) or by the deployment; "dev" locally.
+APP_VERSION = os.environ.get("APP_VERSION", "dev").strip() or "dev"
+GIT_SHA = os.environ.get("GIT_SHA", "unknown").strip() or "unknown"
+
+
+# --- Logging ---
+LOG_LEVEL = os.environ.get("LOG_LEVEL", "INFO").strip().upper()
+LOG_FORMAT = os.environ.get("LOG_FORMAT", "text").strip().lower()   # text | json
 
 
 # --- LLM settings ---

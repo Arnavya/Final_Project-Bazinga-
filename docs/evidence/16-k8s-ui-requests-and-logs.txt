@@ -1,0 +1,24 @@
+## synthetic UI requests through Service -> pod -> Streamlit (2026-10-18T12:24:28Z)
+$ ui-probe.py "Why was the v2.1 release delayed?"
+PASS: ### Answer (V1) — confidence `0.95`
+first line: [Commit COMMIT-a1b2] service=payments-service release=REL-v2.1: Revert migration 0042 (NOT NULL settled_at without default). Maya Chen is assigned to TICKET-123
+$ ui-probe.py "What caused INC-9?"
+PASS: ### Answer (V1) — confidence `0.95`
+first line: Fixed-interval retries amplified load and worsened the payments retry storm during INC-9. team-payments owns payments-service. Maya Chen owns payments-service.
+$ ui-probe.py "Who owns checkout-service?"
+PASS: ### Answer (V1) — confidence `0.95`
+first line: Fixed-interval retries amplified load and worsened the payments retry storm during INC-9. team-payments owns payments-service. Maya Chen owns payments-service.
+$ ui-probe.py "What is the weather on Mars?"
+PASS: ### Answer (V1) — confidence `0.10`  ⚠️ insufficient evidence
+first line: Insufficient evidence in the available knowledge sources to answer this question confidently.
+
+## runbook log queries
+$ kubectl -n reasoning-engine logs deploy/reasoning-engine | grep "\"event\": \"ask.completed\"" | python3 -c <latency summary>
+5 asks, max 7 ms
+$ kubectl -n reasoning-engine logs deploy/reasoning-engine | grep "\"event\"" | tail -4
+{"ts": "2026-10-18T12:24:29.941Z", "level": "INFO", "logger": "pipeline", "msg": "ask.completed", "version": "0.2.0-dev", "event": "ask.completed", "qid": "2bce41258937", "q_len": 33, "latency_ms": 1, "grounded": true, "confidence": 0.95, "provider": "stub"}
+{"ts": "2026-10-18T12:24:32.301Z", "level": "INFO", "logger": "pipeline", "msg": "ask.completed", "version": "0.2.0-dev", "event": "ask.completed", "qid": "20b1c2a8ff22", "q_len": 18, "latency_ms": 0, "grounded": true, "confidence": 0.95, "provider": "stub"}
+{"ts": "2026-10-18T12:24:34.703Z", "level": "INFO", "logger": "pipeline", "msg": "ask.completed", "version": "0.2.0-dev", "event": "ask.completed", "qid": "67a469346533", "q_len": 26, "latency_ms": 0, "grounded": true, "confidence": 0.95, "provider": "stub"}
+{"ts": "2026-10-18T12:24:37.408Z", "level": "INFO", "logger": "pipeline", "msg": "ask.completed", "version": "0.2.0-dev", "event": "ask.completed", "qid": "0bb2875ac973", "q_len": 28, "latency_ms": 0, "grounded": false, "confidence": 0.1, "provider": "stub"}
+$ ... | grep -c llm.fallback_to_stub
+0

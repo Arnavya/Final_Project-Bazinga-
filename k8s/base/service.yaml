@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: reasoning-engine
+spec:
+  type: ClusterIP                  # not exposed outside the cluster; use port-forward or an Ingress
+  selector:
+    app.kubernetes.io/name: reasoning-engine
+  # Streamlit keeps per-browser session state in the pod over a WebSocket; keep a client on one pod.
+  sessionAffinity: ClientIP
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP

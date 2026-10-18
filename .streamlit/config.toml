@@ -1,0 +1,17 @@
+# Server settings for container / production use. Local `streamlit run app.py` picks these up too.
+[server]
+headless = true
+port = 8501
+fileWatcherType = "none"     # no code reloading in production; avoids inotify use
+runOnSave = false
+enableXsrfProtection = true
+maxUploadSize = 1            # MB; the app has no upload widget
+
+[browser]
+gatherUsageStats = false     # no telemetry to Streamlit's servers
+
+[client]
+showErrorDetails = "none"    # no stack traces in the browser; errors go to the logs
+
+[logger]
+level = "info"

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import sys
 
-from engine import investigate, judge, learn, memory
+from engine import investigate, memory
 from pipeline import load_scenarios, run_one
 
 

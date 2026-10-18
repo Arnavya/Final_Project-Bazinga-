@@ -1,0 +1,24 @@
+== Install dependencies
+== Lint (ruff)
+All checks passed!
+== Unit tests
+...............................                                          [100%]
+31 passed in 0.30s
+== Build stores and check readiness
+Dataset written to /src/data/sources
+  services=6 releases=3 incidents=3 tickets=8 commits=6 slack=8 wiki=7
+  scenarios=10
+  includes FALSE leads (WIKI-inc9-postmortem, WIKI-release-v2.1, TICKET-180, stale WIKI-notifications) and NOISE (search/billing).
+[build_vectors] indexed 35 chunks (embedder: ok) -> vector_store.npz
+[build_graph] 37 nodes, 52 edges -> graph.json
+{"ready": true, "version": "dev", "git_sha": "unknown", "llm_provider": "stub", "stores_dir": "/src/stores", "problems": []}
+== Offline benchmark
+  [miss] similarity>=0.75
+  [PASS] root_cause>=0.70
+  [PASS] evidence_coverage>=0.80
+  [miss] improvement>=0.20
+  [PASS] latency<15s
+
+Results saved to /src/stores/history.json
+Run the dashboard with:  streamlit run app.py
+CI TEST JOB: ALL STEPS PASSED

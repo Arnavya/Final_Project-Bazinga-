@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reasoning-engine
+spec:
+  # A ReadWriteOnce volume and a single-writer file store: stop the old pod before the new one
+  # starts, so two processes never write the same lessons.json. Costs a short outage per release.
+  strategy:
+    type: Recreate
+    rollingUpdate: null
+  template:
+    spec:
+      volumes:
+        - name: stores
+          emptyDir: null
+          persistentVolumeClaim:
+            claimName: reasoning-engine-stores

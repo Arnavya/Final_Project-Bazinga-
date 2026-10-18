@@ -9,7 +9,7 @@ import json
 import pandas as pd
 import streamlit as st
 
-from engine import config, memory, metrics, store
+from engine import config, health, memory, metrics, store
 import pipeline
 
 # UI panels — flip any of these to True to show that panel again in the Ask tab.
@@ -38,7 +38,15 @@ def _scenario_answers():
 st.set_page_config(page_title="Organizational Reasoning Engine", layout="wide")
 st.title("Expert-Learning Organizational Reasoning Engine")
 st.caption(f"LLM provider: **{config.LLM_PROVIDER}**"
-           + ("  · running offline (stub heuristics, no key)" if config.USE_STUB else ""))
+           + ("  · running offline (stub heuristics, no key)" if config.USE_STUB else "")
+           + f"  · version `{config.APP_VERSION}` (`{config.GIT_SHA[:7]}`)")
+
+_health = health.check()
+if not _health["ready"]:
+    st.error("Not ready: " + "; ".join(_health["problems"])
+             + ". Build the stores first (`python -m ingest.build_vectors` and "
+               "`python -m ingest.build_graph`).")
+    st.stop()
 
 tab_ask, tab_bench, tab_lessons = st.tabs(["💬 Ask", "📊 Benchmark", "🧠 Learning Memory"])
 

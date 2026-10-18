@@ -1,0 +1,24 @@
+## release 0.1.0-dev -> 0.2.0-dev (2026-10-18T12:16:00Z)
+image built from 8e8ed5427e96cdce93f3b3d6f7181234d11e8d0c
+namespace/reasoning-engine unchanged
+serviceaccount/reasoning-engine unchanged
+configmap/reasoning-engine-config unchanged
+service/reasoning-engine unchanged
+deployment.apps/reasoning-engine configured
+networkpolicy.networking.k8s.io/reasoning-engine unchanged
+deployment.apps/reasoning-engine annotated
+NAME                                READY   STATUS              RESTARTS   AGE     IP           NODE        NOMINATED NODE   READINESS GATES
+reasoning-engine-5b5fc797c-nqkrs    0/1     ContainerCreating   0          0s      <none>       local-k3s   <none>           <none>
+reasoning-engine-64d657dfdd-vvqg9   1/1     Running             0          9m32s   10.42.0.32   local-k3s   <none>           <none>
+NAME                               READY   STATUS    RESTARTS   AGE
+reasoning-engine-5b5fc797c-nqkrs   1/1     Running   0          5s
+== rollout status
+deployment "reasoning-engine" successfully rolled out
+== revision history
+deployment.apps/reasoning-engine
+REVISION  CHANGE-CAUSE
+1         release 0.1.0-dev
+2         release 0.2.0-dev
+
+pod/reasoning-engine-5b5fc797c-nqkrs image=reasoning-engine:0.2.0-dev ready=True app_version=0.2.0-dev
+RELEASE 0.2.0-dev VERIFIED

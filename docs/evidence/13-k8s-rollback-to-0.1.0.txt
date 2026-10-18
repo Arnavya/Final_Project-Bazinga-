@@ -1,0 +1,42 @@
+## rollback 0.2.0-dev -> 0.1.0-dev with rollout undo --to-revision (2026-10-18T12:20:18Z)
+deployment.apps/reasoning-engine
+REVISION  CHANGE-CAUSE
+1         release 0.1.0-dev
+3         release 0.3.0-missing (bad tag)
+4         release 0.2.0-dev
+
+poller before: 12:20:17 ok=220 fail=0
+undo to revision 1
+deployment.apps/reasoning-engine rolled back
+== rollout status
+Waiting for deployment "reasoning-engine" rollout to finish: 1 old replicas are pending termination...
+Waiting for deployment "reasoning-engine" rollout to finish: 1 old replicas are pending termination...
+deployment "reasoning-engine" successfully rolled out
+== revision history
+deployment.apps/reasoning-engine
+REVISION  CHANGE-CAUSE
+3         release 0.3.0-missing (bad tag)
+4         release 0.2.0-dev
+5         release 0.1.0-dev
+
+error: cannot exec into a container in a completed pod; current phase is Succeeded
+pod/reasoning-engine-5b5fc797c-nqkrs image=reasoning-engine:0.2.0-dev ready=False app_version=?
+  FAIL image tag != 0.1.0-dev
+  FAIL pod not Ready
+  FAIL app reports ?
+pod/reasoning-engine-64d657dfdd-kddl9 image=reasoning-engine:0.1.0-dev ready=True app_version=0.1.0-dev
+RELEASE 0.1.0-dev NOT VERIFIED
+poller after: 12:20:27 ok=240 fail=0
+
+## verify re-run after fixing verify-release.sh (it counted the terminating old pod) (2026-10-18T12:20:38Z)
+== rollout status
+deployment "reasoning-engine" successfully rolled out
+== revision history
+deployment.apps/reasoning-engine
+REVISION  CHANGE-CAUSE
+3         release 0.3.0-missing (bad tag)
+4         release 0.2.0-dev
+5         release 0.1.0-dev
+
+pod/reasoning-engine-64d657dfdd-kddl9 image=reasoning-engine:0.1.0-dev ready=True app_version=0.1.0-dev
+RELEASE 0.1.0-dev VERIFIED

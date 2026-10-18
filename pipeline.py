@@ -8,10 +8,20 @@ For each scenario:
 """
 from __future__ import annotations
 
+import hashlib
 import json
+import time
 from typing import Any, Dict, List
 
 from engine import classify, config, investigate, judge, learn, memory, metrics, store
+from engine.logs import get_logger, log_event
+
+log = get_logger("pipeline")
+
+
+def _qid(question: str) -> str:
+    """Short stable fingerprint so logs can correlate a question without storing its text."""
+    return hashlib.sha256(question.strip().lower().encode("utf-8")).hexdigest()[:12]
 
 
 def load_scenarios() -> List[Dict[str, Any]]:
@@ -51,25 +61,37 @@ def run_one(scenario: Dict[str, Any]) -> Dict[str, Any]:
 
 def run_benchmark(reset: bool = True) -> Dict[str, Any]:
     """Run all scenarios sequentially so lessons accumulate; return results + summary."""
+    start = time.perf_counter()
     if reset:
         memory.reset()  # start from a blank Learning Memory for a fair cold baseline
     scenarios = load_scenarios()
     results = [run_one(s) for s in scenarios]
     summary = metrics.aggregate(results)
     store.save_benchmark(results)  # persist reasoning history; summary recomputed on load
+    log_event(log, "benchmark.completed", scenarios=len(results),
+              duration_ms=int((time.perf_counter() - start) * 1000))
     return {"results": results, "summary": summary}
 
 
 # --- Live "Ask" mode (free-form questions; optional human-in-the-loop learning) ---
 def ask(question: str) -> Dict[str, Any]:
     """Answer any free-form question using the full Learning Memory."""
-    return investigate.investigate(question, version="ask", use_lessons=True)
+    start = time.perf_counter()
+    try:
+        answer = investigate.investigate(question, version="ask", use_lessons=True)
+    except Exception:
+        log.exception("ask.failed", extra={"event": "ask.failed", "qid": _qid(question)})
+        raise
+    log_event(log, "ask.completed", qid=_qid(question), q_len=len(question),
+              latency_ms=int((time.perf_counter() - start) * 1000),
+              grounded=answer.get("grounded"), confidence=answer.get("confidence"),
+              provider="stub" if config.USE_STUB else config.LLM_PROVIDER)
+    return answer
 
 
 def teach(question: str, expert_answer: str, ai_answer: Dict[str, Any]) -> Dict[str, Any]:
     """Live human-in-the-loop: capture the expert answer, learn, and re-run (V2)."""
     cls = classify.classify(question)
-    is_ownership = cls["question_type"] == "ownership"
     scenario = {
         "id": f"ASK-{len(store.load_ask_log()) + 1:03d}",
         "question": question,
@@ -94,4 +116,6 @@ def teach(question: str, expert_answer: str, ai_answer: Dict[str, Any]) -> Dict[
         "lesson": learned["lesson"]["lesson_text"], "action": learned["action"],
     }
     store.append_ask(event)
+    log_event(log, "teach.completed", qid=_qid(question), action=learned["action"],
+              similarity_v1=gap_v1["similarity"], similarity_v2=gap_v2["similarity"])
     return {"gap_v1": gap_v1, "learned": learned, "answer_v2": answer_v2, "gap_v2": gap_v2}
